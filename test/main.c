@@ -74,8 +74,10 @@ static void test_strcpy( void )
 
 int main( void )
 {
-	if ( 1 == 2 )
+	if ( 1 == 2 ) {
 		test_strlen();
-	test_strcpy();
+		test_strcpy();
+	}
+	printf("%d\n", ft_atoi_base("-2", "0123456789"));
 	return ( 0 );
 }
