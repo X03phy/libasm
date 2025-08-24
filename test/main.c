@@ -88,6 +88,11 @@ static void test_atoi_base( void )
 	const char *test_11 = "\t +--+-abc";
 	const char *test_12 = "\t  abc";
 	const char *test_13 = "";
+	const char *test_14 = "101010"; // 42
+	const char *test_15 = "10011010010"; // 1234
+	const char *test_16 = "2a"; // 42
+	const char *test_17 = "4d2"; // 1234
+
 
 	const char *base_2 = "01";
 	const char *base_10 = "0123456789";
@@ -155,22 +160,25 @@ static void test_atoi_base( void )
 	printf( "test: \033[34m\"%s\"\033[0m and \033[34m\"%s\"\033[0m \n", test_13, base_10 );
 	printf( "ft_atoi_base() = \033[32m\"%d\"\033[0m\n", ft_atoi_base( test_13, base_10 ) );
 
+	// base 2 tests
 	printf( "\033[31m--------------------test 14--------------------\033[0m\n" );
-	printf( "test: \033[34m\"%s\"\033[0m and \033[34m\"%s\"\033[0m \n", test_01, base_2 );
-	printf( "ft_atoi_base() = \033[32m\"%d\"\033[0m\n", ft_atoi_base( test_01, base_2 ) );
+	printf( "test: \033[34m\"%s\"\033[0m and \033[34m\"%s\"\033[0m \n", test_14, base_2 );
+	printf( "ft_atoi_base() = \033[32m\"%d\"\033[0m\n", ft_atoi_base( test_14, base_2 ) );
 
 	printf( "\033[31m--------------------test 15--------------------\033[0m\n" );
-	printf( "test: \033[34m\"%s\"\033[0m and \033[34m\"%s\"\033[0m \n", test_09, base_2 );
-	printf( "ft_atoi_base() = \033[32m\"%d\"\033[0m\n", ft_atoi_base( test_09, base_2 ) );
+	printf( "test: \033[34m\"%s\"\033[0m and \033[34m\"%s\"\033[0m \n", test_15, base_2 );
+	printf( "ft_atoi_base() = \033[32m\"%d\"\033[0m\n", ft_atoi_base( test_15, base_2 ) );
 
+	// base 16 tests
 	printf( "\033[31m--------------------test 16--------------------\033[0m\n" );
-	printf( "test: \033[34m\"%s\"\033[0m and \033[34m\"%s\"\033[0m \n", test_01, base_16 );
-	printf( "ft_atoi_base() = \033[32m\"%d\"\033[0m\n", ft_atoi_base( test_01, base_16 ) );
+	printf( "test: \033[34m\"%s\"\033[0m and \033[34m\"%s\"\033[0m \n", test_16, base_16 );
+	printf( "ft_atoi_base() = \033[32m\"%d\"\033[0m\n", ft_atoi_base( test_16, base_16 ) );
 
 	printf( "\033[31m--------------------test 17--------------------\033[0m\n" );
-	printf( "test: \033[34m\"%s\"\033[0m and \033[34m\"%s\"\033[0m \n", test_09, base_16 );
-	printf( "ft_atoi_base() = \033[32m\"%d\"\033[0m\n", ft_atoi_base( test_09, base_16 ) );
+	printf( "test: \033[34m\"%s\"\033[0m and \033[34m\"%s\"\033[0m \n", test_17, base_16 );
+	printf( "ft_atoi_base() = \033[32m\"%d\"\033[0m\n", ft_atoi_base( test_17, base_16 ) );
 
+	// Invalid base tests
 	printf( "\033[31m--------------------test 18--------------------\033[0m\n" );
 	printf( "test: \033[34m\"%s\"\033[0m and \033[34m\"%s\"\033[0m \n", test_01, base_invalid_0 );
 	printf( "ft_atoi_base() = \033[32m\"%d\"\033[0m\n", ft_atoi_base( test_01, base_invalid_0 ) );
