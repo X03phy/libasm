@@ -2,53 +2,121 @@
 
 section .text
 	global ft_atoi_base
-	extern ft_strlen
-	extern ft_isspace
-
-; rbx -> array
-; rcx -> sign
-; rdx -> size base
-; r8  -> 
 
 ft_atoi_base:
-	mov     rbx, rdi ; store the string
-	mov     ecx, 1   ; store the sign
-	mov     rdi, rsi
-	call    ft_strlen
-	mov     rdx, rax ; store the len of the base
-.loop_whitespaces:
-	mov     dil, byte [rbx] ; a checker ici
-	call    ft_isspace
-	test    eax, eax
-	jz      .check_negative_sign ; on a fini de tt checker
-	inc     rbx
-	jmp     .loop_whitespaces
-.check_negative_sign:
-	mov     al, byte [rbx]
-	cmp     al, '-'
-	jne     .check_positive_sign
-	inc     ebx
-	neg     ecx
-	jmp     .convert
-.check_positive_sign:
-	mov     al, byte [rbx]
-	cmp     al, '+'
-	jne     .convert
-	inc     ebx
-.convert:
-	xor     eax, eax
-.loop_convert:
-; check if in base
-	mov r8, [rbx]
-.check_loop:
-	inc rdi
+	xor   rax, rax ; nb
 
-	cmp rdi, rdx
-	jl .check_loop
-.ufdeidew
-	mul     edx  ; jsp si c'est bon
-	mov     r8, byte [rsi + 2] ; changer r8 par autre chose et coder la sous fct dcp
-	sub     r8, '0'
-	add     eax, r8
-	; jmp     .loop_convert
+	test  rdi, rdi
+	jz    .done
+	test  rsi, rsi
+	jz    .done
+	xor   rbx, rbx ; i
+
+.is_valid_base_loop:
+	mov   dl, byte [rsi + rbx]
+	test  dl, dl
+	jz    .is_correct_base_length
+
+; check if the base contains an invalid character
+	cmp	dl, '+'
+	je    .done
+	cmp	dl, '-'
+	je    .done
+	cmp	dl, ' '
+	je    .done
+	cmp	dl, 9
+	je    .done
+	cmp	dl, 10
+	je    .done
+	cmp	dl, 11
+	je    .done
+	cmp	dl, 12
+	je    .done
+	cmp	dl, 13
+	je    .done
+
+; check for duplicate
+	xor   rcx, rcx ; j = 0 ;  a mettre apres tous les cmps
+
+	; ici <
+.check_for_duplicate_loop:
+	cmp   rbx, rcx
+	jle   .is_valid_base_loop_inc ; si i <= j
+	cmp   byte [rsi + rcx], dl
+	je    .done
+	inc   rcx
+	jmp   .check_for_duplicate_loop
+
+.is_valid_base_loop_inc:
+	inc   rbx
+	jmp   .is_valid_base_loop
+
+.is_correct_base_length:
+	cmp   rbx, 2
+	jl    .done
+
+.skip_whitespaces_loop:
+	cmp	byte [rdi], ' '
+	je    .skip_whitespaces_loop_inc
+	cmp	byte [rdi], 9
+	je    .skip_whitespaces_loop_inc
+	cmp	byte [rdi], 10
+	je    .skip_whitespaces_loop_inc
+	cmp	byte [rdi], 11
+	je    .skip_whitespaces_loop_inc
+	cmp	byte [rdi], 12
+	je    .skip_whitespaces_loop_inc
+	cmp	byte [rdi], 13
+	je    .skip_whitespaces_loop_inc
+	jmp   .skip_signs
+
+.skip_whitespaces_loop_inc:
+	inc   rdi
+	jmp   .skip_whitespaces_loop
+
+.skip_signs:
+	mov   rcx, 1 ; sign
+
+.skip_signs_loop:
+	cmp   byte [rdi], '-'
+	jne   .check_plus
+	neg   rcx 
+	jmp   .skip_signs_loop_inc
+
+.check_plus:
+	cmp   byte [rdi], '+'
+	jne   .is_in_base
+
+.skip_signs_loop_inc:
+	inc   rdi
+	jmp   .skip_signs_loop
+
+.is_in_base:
+	mov   dl, byte [rdi]  
+	test  dl, dl
+	jz    .convert_done
+	xor   rdx, rdx
+
+.is_in_base_loop:
+	cmp   rdx, rbx     ; cmp j with n
+	jge   .convert_done ; not in base
+
+	mov   r8b, byte [rsi + rdx] ; check
+	cmp   byte [rdi], r8b 
+	je    .convert
+
+.is_in_base_loop_inc:
+	inc   rdx
+	jmp   .is_in_base_loop
+
+.convert:
+	imul  rax, rbx
+	add   rax, rdx
+	inc   rdi
+	jmp   .is_in_base
+
+.convert_done:
+	imul  rax, rcx
+
+.done:
 	ret
