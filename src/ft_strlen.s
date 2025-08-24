@@ -9,11 +9,14 @@ section .text
 	global ft_strlen
 
 ft_strlen:
-	xor     rax, rax            ; set rax to 0
+	xor     rax, rax             ; set rax to 0
+
 .loop:
-	cmp     byte [rdi + rax], 0 ; compare the actual char with 0
-	je      .done               ; jump to the end if it's equal
-	inc     rax                 ; increment rax
-	jmp     .loop               ; jump back to the beginning of the loop
+	mov     dl, byte [rdi + rax] ; store the char in rdx
+	test    dl, dl               ; compare the actual char with 0
+	je      .done                ; jump to the end if it's equal
+	inc     rax                  ; increment rax
+	jmp     .loop                ; jump back to the beginning of the loop
+
 .done:
-	ret                         ; return rax
+	ret                          ; return rax
