@@ -10,6 +10,7 @@ section .text
 
 ft_strcpy:
 	mov     rax, rdi       ; set rax to dest
+
 .loop:
 	mov     bl, byte [rsi] ; store a byte
 	mov     byte [rdi], bl ; copy that byte
@@ -18,5 +19,6 @@ ft_strcpy:
 	inc     rdi            ; increment dest
 	inc     rsi            ; increment src
 	jmp     .loop          ; jump back to the beginning of the loop
+
 .done
 	ret                    ; return rax

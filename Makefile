@@ -48,6 +48,7 @@ $(NAME): $(OBJ)
 $(TEST): $(TEST_OBJ) $(NAME)
 	$(CC) $(CFLAGS) $(TEST_OBJ) -L. -lasm -o $@
 
+# clean rules
 clean:
 	@if [ -d $(BUILD) ]; then rm -rf $(BUILD) && printf "\033[1;31m\tDeleted: $(NAME) $(BUILD)\033[0m\n"; fi
 
