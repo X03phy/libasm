@@ -8,7 +8,7 @@ ft_atoi_base:
 
 	test  rdi, rdi
 	jz    .done
-	test  rsi, rsi
+	test  dl, dl
 	jz    .done
 	xor   rbx, rbx ; i
 
