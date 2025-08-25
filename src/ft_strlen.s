@@ -13,8 +13,8 @@ ft_strlen:
 
 .loop:
 	mov     dl, byte [rdi + rax] ; store the char in rdx
-	test    dl, dl               ; compare the actual char with 0
-	je      .done                ; jump to the end if it's equal
+	test    dl, dl               ; check if the actual char is zero
+	jz      .done                ; jump to the end if it's zero
 	inc     rax                  ; increment rax
 	jmp     .loop                ; jump back to the beginning of the loop
 
