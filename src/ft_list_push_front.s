@@ -15,5 +15,5 @@ ft_list_push_front:
 
 	mov     [rdi], rsi     ; *lst = new
 
-.done
+.done:
 	ret
