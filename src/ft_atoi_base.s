@@ -5,10 +5,13 @@ section .text
 
 ft_atoi_base:
 	xor     rax, rax                   ; nb = 0
+
 	test    rdi, rdi                   ; check if str is null
 	jz      .done
+
 	test    dl, dl                     ; check if base is null
 	jz      .done
+
 	xor     rbx, rbx                   ; i = 0
 
 .is_valid_base_loop:                   ; check if the base contains an invalid character
@@ -39,8 +42,10 @@ ft_atoi_base:
 .check_for_duplicate_loop:
 	cmp     rbx, rcx
 	jle     .is_valid_base_loop_inc    ; if i <= j increment j
+
 	cmp     byte [rsi + rcx], dl       ; check if invalid character in base
 	je      .done
+
 	inc     rcx
 	jmp     .check_for_duplicate_loop
 
@@ -77,6 +82,7 @@ ft_atoi_base:
 .skip_signs_loop:
 	cmp     byte [rdi], '-'
 	jne     .check_plus
+
 	neg     rcx
 	jmp     .skip_signs_loop_inc
 
@@ -92,6 +98,7 @@ ft_atoi_base:
 	mov     dl, byte [rdi]  
 	test    dl, dl
 	jz      .convert_done              ; jump if it's not in base
+
 	xor     rdx, rdx
 
 .is_in_base_loop:
