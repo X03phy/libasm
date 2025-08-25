@@ -7,7 +7,7 @@ ft_lstsize:
 	xor     eax, eax
 
 .loop:
-	test    rdi, rdi
+	test    rdi, rdi       ; lst == NULL
 	jz      .done
 
 	inc     eax
