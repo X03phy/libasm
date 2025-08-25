@@ -7,7 +7,7 @@ ft_list_push_front:
 	test    rdi, rdi       ; lst == NULL
 	jz      .done
 
-	test    rsi, rsi       ; rsi == NULL
+	test    rsi, rsi       ; new == NULL
 	jz      .done
 
 	mov     rax, [rdi]
