@@ -197,12 +197,62 @@ static void test_atoi_base( void )
 }
 
 
-int main( void )
+// int main( void )
+// {
+// 	if ( 1 == 2 ) {
+// 		test_strlen();
+// 		test_strcpy();
+// 	}
+// 	test_atoi_base();
+// 	return ( 0 );
+// }
+#include <stdlib.h>
+int cmp_int(void *a, void *b)
+{
+    return (*(int *)a - *(int *)b);
+}
+
+t_list *new_node(int value)
+{
+    t_list *node = malloc(sizeof(t_list));
+    int *data = malloc(sizeof(int));
+    *data = value;
+    node->data = data;
+    node->next = 0;
+    return node;
+}
+
+void print_list(t_list *list)
+{
+    while (list)
+    {
+        printf("%d -> ", *(int *)list->data);
+        list = list->next;
+    }
+    printf("NULL\n");
+}
+
+int main(void)
 {
 	if ( 1 == 2 ) {
 		test_strlen();
 		test_strcpy();
+		test_atoi_base();
 	}
-	test_atoi_base();
-	return ( 0 );
+    // Création d'une liste non triée: 42 -> 3 -> 15 -> 7
+	t_list *list = NULL;
+	ft_list_push_front(&list , (void *)42);
+	ft_list_push_front(&list , (void *)3);
+	ft_list_push_front(&list , (void *)15);
+	ft_list_push_front(&list , (void *)7);
+
+    printf("Avant tri:\n");
+    print_list(list);
+
+    ft_list_sort(&list, cmp_int);
+
+    printf("Après tri:\n");
+    print_list(list);
+
+    return 0;
 }
