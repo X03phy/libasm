@@ -14,19 +14,19 @@ ft_list_push_front:
 	push    rdi
 	push    rsi
 
-	mov     rdi, 16
+	mov     rdi, 16        ; sizeof(t_list)
 	call    malloc
 
 	pop     rsi
 	pop     rdi
 
-	test    rax, rax
+	test    rax, rax       ; malloc failed
 	jz      .done
 
-	mov     [rax], rsi ; new->data = value
+	mov     [rax], rsi     ; new->data = value
 	mov     rcx, [rdi]
 	mov     [rax + 8], rcx ; new->next = *lst
-	mov     [rdi], rax
+	mov     [rdi], rax     ; *begin_list = new
 
 .done:
 	ret
