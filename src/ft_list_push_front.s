@@ -1,7 +1,8 @@
-; void ft_lstadd_front(t_list **lst, t_list *new);
+ ; void ft_list_push_front(t_list **begin_list, void *data)
 
 section .text
 	global ft_list_push_front
+	extern malloc
 
 ft_list_push_front:
 	test    rdi, rdi       ; lst == NULL
@@ -10,10 +11,22 @@ ft_list_push_front:
 	test    rsi, rsi       ; new == NULL
 	jz      .done
 
-	mov     rax, [rdi]
-	mov     [rsi + 8], rax ; new->next = *lst
+	push    rdi
+	push    rsi
 
-	mov     [rdi], rsi     ; *lst = new
+	mov     rdi, 16
+	call    malloc
+
+	pop     rsi
+	pop     rdi
+
+	test    rax, rax
+	jz      .done
+
+	mov     [rax], rsi ; new->data = value
+	mov     rcx, [rdi]
+	mov     [rax + 8], rcx ; new->next = *lst
+	mov     [rdi], rax
 
 .done:
 	ret
