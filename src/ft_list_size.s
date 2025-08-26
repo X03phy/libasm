@@ -1,9 +1,9 @@
-; int ft_lstsize(t_list *lst);
+; int ft_list_size(t_list *lst);
 
 section .text
-	global ft_lstsize
+	global ft_list_size
 
-ft_lstsize:
+ft_list_size:
 	xor     eax, eax
 
 .loop:
