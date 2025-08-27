@@ -21,5 +21,4 @@ void    ft_list_push_front( t_list **lst, void *value );
 int     ft_list_size( t_list *lst );
 void    ft_list_sort( t_list **begin_list, int (*cmp)() );
 
-
 #endif
