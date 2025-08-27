@@ -1,6 +1,7 @@
 #include "libasm.h"
 #include <stdio.h> // printf()
-#include <string.h> // strlen()
+#include <string.h> // strlen(), strcpy(), strdup()
+#include <stdlib.h> // free()
 
 static void test_strlen( void )
 {
@@ -70,6 +71,60 @@ static void test_strcpy( void )
 	printf( "test: \"%s\"\n", test_4 );
 	printf( "strcpy()    = \"%s\"\n", strcpy( dest, test_4 ) );
 	printf( "ft_strcpy() = \"%s\"\n", ft_strcpy( dest, test_4 ) );
+}
+
+void test_strdup( void )
+{
+	char *dest;
+
+	const char *test_0 = "Hello, world!";
+	const char *test_1 = "Vous savez, moi je ne crois pas qu’il y ait de bonne ou de mauvaise situation. Moi, si je devais résumer ma vie aujourd’hui avec vous, je dirais que c’est d’abord des rencontres. Des gens qui m’ont tendu la main, peut-être à un moment où je ne pouvais pas, où j’étais seul chez moi. Et c’est assez curieux de se dire que les hasards, les rencontres forgent une destinée… Parce que quand on a le goût de la chose, quand on a le goût de la chose bien faite, le beau geste, parfois on ne trouve pas l’interlocuteur en face je dirais, le miroir qui vous aide à avancer. Alors ça n’est pas mon cas, comme je disais là, puisque moi au contraire, j’ai pu : et je dis merci à la vie, je lui dis merci, je chante la vie, je danse la vie… je ne suis qu’amour ! Et finalement, quand beaucoup de gens aujourd’hui me disent « Mais comment fais-tu pour avoir cette humanité ? », et bien je leur réponds très simplement, je leur dis que c’est ce goût de l’amour ce goût donc qui m’a poussé aujourd’hui à entreprendre une construction mécanique, mais demain qui sait ? Peut-être simplement à me mettre au service de la communauté, à faire le don, le don de soi…";
+	const char *test_2 = "Pigeon, oiseau à la grise robe, dans l'enfer des villes, à mon regard tu te dérobes, tu es vraiment le plus agile.";
+	const char *test_3 = "23 à 0 ! C'est la piquette Jack ! Tu sais pas jouer Jack ! T'es mauvais !";
+	const char *test_4 = "";
+	const char *test_5 = NULL;
+
+	printf( "--------------------test 0--------------------\n" );
+	printf( "test: \"%s\"\n", test_0 );
+	printf( "strdup()    = \"%s\"\n", dest = strdup( test_0 ) );
+	free( dest );
+	printf( "ft_strdup() = \"%s\"\n", dest = ft_strdup( test_0 ) );
+	free( dest );
+
+	printf( "--------------------test 1--------------------\n" );
+	printf( "test: \"%s\"\n", test_1 );
+	printf( "strdup()    = \"%s\"\n", dest = strdup( test_1 ) );
+	free( dest );
+	printf( "ft_strdup() = \"%s\"\n", dest = ft_strdup( test_1 ) );
+	free( dest );
+
+	printf( "--------------------test 2--------------------\n" );
+	printf( "test: \"%s\"\n", test_2 );
+	printf( "strdup()    = \"%s\"\n", dest = strdup( test_2 ) );
+	free( dest );
+	printf( "ft_strdup() = \"%s\"\n", dest = ft_strdup( test_2 ) );
+	free( dest );
+
+	printf( "--------------------test 3--------------------\n" );
+	printf( "test: \"%s\"\n", test_3 );
+	printf( "strdup()    = \"%s\"\n", dest = strdup( test_3 ) );
+	free( dest );
+	printf( "ft_strdup() = \"%s\"\n", dest = ft_strdup( test_3 ) );
+	free( dest );
+
+	printf( "--------------------test 4--------------------\n" );
+	printf( "test: \"%s\"\n", test_4 );
+	printf( "strdup()    = \"%s\"\n", dest = strdup( test_4 ) );
+	free( dest );
+	printf( "ft_strdup() = \"%s\"\n", dest = ft_strdup( test_4 ) );
+	free( dest );
+
+	printf( "--------------------test 5--------------------\n" );
+	printf( "test: \"%s\"\n", test_5 );
+	// printf( "strdup()    = \"%s\"\n", dest = strdup( test_5 ) );
+	// free( dest );
+	printf( "ft_strdup() = \"%s\"\n", dest = ft_strdup( test_5 ) );
+	free( dest );
 }
 
 static void test_atoi_base( void )
@@ -196,42 +251,6 @@ static void test_atoi_base( void )
 	printf( "ft_atoi_base() = \033[32m\"%d\"\033[0m\n", ft_atoi_base( test_01, base_invalid_3 ) );
 }
 
-
-// int main( void )
-// {
-// 	if ( 1 == 2 ) {
-// 		test_strlen();
-// 		test_strcpy();
-// 	}
-// 	test_atoi_base();
-// 	return ( 0 );
-// }
-#include <stdlib.h>
-int cmp_int(void *a, void *b)
-{
-    return (*(int *)a - *(int *)b);
-}
-
-t_list *new_node(int value)
-{
-    t_list *node = malloc(sizeof(t_list));
-    int *data = malloc(sizeof(int));
-    *data = value;
-    node->data = data;
-    node->next = 0;
-    return node;
-}
-
-void print_list(t_list *list)
-{
-    while (list)
-    {
-        printf("%d -> ", *(int *)list->data);
-        list = list->next;
-    }
-    printf("NULL\n");
-}
-
 int main(void)
 {
 	if ( 1 == 2 ) {
@@ -239,20 +258,7 @@ int main(void)
 		test_strcpy();
 		test_atoi_base();
 	}
-    // Création d'une liste non triée: 42 -> 3 -> 15 -> 7
-	t_list *list = NULL;
-	ft_list_push_front(&list , (void *)42);
-	ft_list_push_front(&list , (void *)3);
-	ft_list_push_front(&list , (void *)15);
-	ft_list_push_front(&list , (void *)7);
-
-    printf("Avant tri:\n");
-    print_list(list);
-
-    ft_list_sort(&list, cmp_int);
-
-    printf("Après tri:\n");
-    print_list(list);
+	test_strdup();
 
     return 0;
 }
