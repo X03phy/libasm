@@ -20,17 +20,16 @@ ft_list_sort:
 	push    r13 ; ptr->next
 	push    r14 ; end
 
-	xor     r14, r14 ; initialize end to NULL
+	xor     r14, r14 ; initialize r14 to NULL
 
 .outer_loop:
-	xor     bl, bl     ; swapped = 0
-	mov     r12, [rdi] ; ptr = *begin_list
+	xor    bl, bl ; swapped = 0
+	mov    r12, [rdi] ; ptr = *begin_list
 
 .inner_loop:
-
-	mov     r13, [r12 + 8]  ; ptr->next
-	cmp     r13, r14        ; check if ptr->next == end
-	je      .outer_loop_inc ; end of the inner loop
+	mov    r13, [r12 + 8]
+	cmp    r13, r14
+	je     .outer_loop_check
 
 	push    rdi
 	push    rsi
@@ -46,7 +45,7 @@ ft_list_sort:
 	cmp     rax, 0
 	jle    .inner_loop_inc
 
-	; swap
+; swap
 	mov     rax, [r12]
 	mov     rcx, [r13]
 
@@ -59,16 +58,13 @@ ft_list_sort:
 	mov     r12, r13
 	jmp     .inner_loop
 
-.outer_loop_inc:
+.outer_loop_check:
 	mov     r14, r12
 	test    bl, bl
 	jnz     .outer_loop
 
-	pop     r14
-	pop     r13
-	pop     r12
-	pop     rbx
+.clean:
+	add     rsp, 32      ; clean the stack
 
-.done
-	mov   rax, rdi
+.done:
 	ret
