@@ -30,7 +30,7 @@ ft_strdup:
 
 .clean
 	add     rsp, 8      ; clean the stack
-	xor     rax, rax    ; set rax to 0
 
 .done
+	xor     rax, rax    ; set rax to 0
 	ret
