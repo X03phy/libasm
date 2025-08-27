@@ -3,7 +3,7 @@ TEST=libasm
 
 CC=gcc
 NASM=nasm
-NASMFLAGS=-f elf64
+NASMFLAGS=-f elf64 -g
 AR=ar
 ARFLAGS=rcs
 CFLAGS=-Werror -Wall -Wextra -g -MMD
@@ -24,7 +24,7 @@ TEST_OBJ=$(patsubst $(TEST_DIR)/%.c, $(BUILD)/%.o, $(TEST_SRC))
 DEP=$(TEST_OBJ:%.o=%.d)
 
 all: create_dir $(NAME)
-
+bonus: all
 test: all $(TEST)
 
 create_dir: | $(BUILD)
@@ -46,7 +46,7 @@ $(NAME): $(OBJ)
 
 # test program
 $(TEST): $(TEST_OBJ) $(NAME)
-	$(CC) $(CFLAGS) $(TEST_OBJ) -L. -lasm -o $@
+	$(CC) $(CFLAGS) -no-pie $(TEST_OBJ) -L. -lasm -o $@
 
 # clean rules
 clean:
