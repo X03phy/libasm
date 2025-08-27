@@ -7,6 +7,9 @@ section .text
 	extern ft_strcpy
 
 ft_strdup:
+	test    rdi, rdi    ; check if s == NULL
+	jz      .done
+
 	push    rdi         ; store s
 
 ; get the size
@@ -17,7 +20,7 @@ ft_strdup:
 	mov     rdi, rax
 	call    malloc
 	test    rax, rax
-	jz      .error_done
+	jz      .clean
 
 ; copy data
 	mov     rdi, rax
@@ -25,7 +28,9 @@ ft_strdup:
 	call    ft_strcpy
 	ret
 
-.error_done
+.clean
 	add     rsp, 8      ; clean the stack
 	xor     rax, rax    ; set rax to 0
+
+.done
 	ret
