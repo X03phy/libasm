@@ -73,7 +73,7 @@ static void test_strcpy( void )
 	printf( "ft_strcpy() = \"%s\"\n", ft_strcpy( dest, test_4 ) );
 }
 
-void test_strdup( void )
+static void test_strdup( void )
 {
 	char *dest;
 
@@ -251,14 +251,71 @@ static void test_atoi_base( void )
 	printf( "ft_atoi_base() = \033[32m\"%d\"\033[0m\n", ft_atoi_base( test_01, base_invalid_3 ) );
 }
 
+static void print_list( t_list *list ) // works only for integers
+{
+	while ( list )
+	{
+		printf( "%d -> ", *( int * )list->data );
+		list = list->next;
+	}
+	printf( "NULL\n" );
+}
+
+static int cmp( void *a, void *b )
+{
+	if ( *( int * )a <= *( int * )b )
+		return 0;
+	return 1;
+}
+
+static int is_list_sorted(t_list *list)
+{
+    while (list && list->next)
+    {
+        if (*(int *)list->next->data < *(int *)list->data)
+            return 0;
+        list = list->next;
+    }
+    return 1;
+}
+
+static void test_list_sort( void )
+{
+    t_list *list = NULL;
+
+	for (int i = 0; i < 100; ++i)
+	{
+		int *val = malloc(sizeof(int));
+		if (!val)
+		{
+			perror("malloc");
+			exit(1);
+		}
+		*val = rand() % 100;
+		ft_list_push_front(&list, val);
+	}
+
+    printf("Avant tri : ");
+    print_list(list);
+
+    ft_list_sort(&list, cmp);
+
+    printf("Après tri : ");
+    print_list(list);
+	if (is_list_sorted( list ))
+		printf("yeaaaaahhhh\n");
+	else
+		printf("noooooo\n");
+}
+
 int main(void)
 {
 	if ( 1 == 2 ) {
 		test_strlen();
 		test_strcpy();
 		test_atoi_base();
+		test_strdup();
 	}
-	test_strdup();
-
+	test_list_sort();
     return 0;
 }
