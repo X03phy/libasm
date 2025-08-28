@@ -16,24 +16,24 @@ ft_list_remove_if:
 	test    rcx, rcx ; free_fct == NULL
 	jz      .done
 
-	push    rbx ; *begin_list
+	push    rbx ; current
 	push    r12 ; data_ref
 	push    r13 ; cmp
 	push    r14 ; free_fct
-	push    r15 ; previous
-	push    rdi
+	push    r15 ; tmp
 
-	mov     rbx, [rdi]
+	mov     rbx, rdi
 	mov     r12, rsi
 	mov     r13, rdx
 	mov     r14, rcx
-	xor     r15, r15 ; previous = NULL
 
 .loop:
-	test    rbx, rbx ; is it the end ?
+	mov     rax, [rbx]
+	test    rax, rax ; is it the end ?
 	jz      .clean
 
-	mov     rdi, [rbx]
+	mov     rax, [rbx]
+	mov     rdi, [rax]
 	mov     rsi, r12
 	call    r13
 
@@ -41,31 +41,22 @@ ft_list_remove_if:
 	jnz     .different
 
 ; same
-	mov     rax, [rbx + 8]
-	test    r15, r15
-	jnz     .is_prev
+	mov     r15, [rbx]
+	mov     rax, [r15 + 8]
+	mov     [rbx], rax
 
-; no_prev
-	pop     rdi
-	mov     [rdi], rax
-	push    rdi
-	jmp     .remove
-
-.is_prev:
-	mov     [r15 + 8], rax
-
-.remove:
-	mov     rdi, [rbx]
+	mov     rdi, [r15]
 	call    r14
-	mov     rdi, rbx
+	
+	mov     rdi, r15
 	call    free
-	jmp     .loop_inc
+
+	jmp     .loop
 
 .different:
-	mov     r15, rbx
-
-.loop_inc:
-	mov     rbx, [rbx + 8]
+	mov     rax, [rbx]      ; rax = *current (t_list *)
+	mov     rbx, rax        ; rbx = *current
+	add     rbx, 8           ; rbx = &(*current)->next (offset 8 du champ next)
 	jmp     .loop
 
 .clean:
