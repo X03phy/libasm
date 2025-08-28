@@ -12,6 +12,7 @@ ft_atoi_base:
 	test    dl, dl                     ; check if base is null
 	jz      .done
 
+	push    rbx
 	xor     rbx, rbx                   ; i = 0
 
 .is_valid_base_loop:                   ; check if the base contains an invalid character
@@ -20,21 +21,21 @@ ft_atoi_base:
 	jz      .is_correct_base_length
 
 	cmp	    dl, '+'
-	je      .done
+	je      .clean
 	cmp	    dl, '-'
-	je      .done
+	je      .clean
 	cmp     dl, ' '
-	je      .done
+	je      .clean
 	cmp	    dl, 9                      ; '\t'
-	je      .done
+	je      .clean
 	cmp	    dl, 10                     ; '\n'
-	je      .done
+	je      .clean
 	cmp	    dl, 11                     ; '\v'
-	je      .done
+	je      .clean
 	cmp	    dl, 12                     ; '\f'
-	je      .done
+	je      .clean
 	cmp	    dl, 13                     ; '\r'
-	je      .done
+	je      .clean
 
 ; check for duplicate
 	xor     rcx, rcx                   ; j = 0 ;  a mettre apres tous les cmps
@@ -44,7 +45,7 @@ ft_atoi_base:
 	jle     .is_valid_base_loop_inc    ; if i <= j increment j
 
 	cmp     byte [rsi + rcx], dl       ; check if invalid character in base
-	je      .done
+	je      .clean
 
 	inc     rcx
 	jmp     .check_for_duplicate_loop
@@ -55,7 +56,7 @@ ft_atoi_base:
 
 .is_correct_base_length:
 	cmp     rbx, 2
-	jl      .done
+	jl      .clean
 
 .skip_whitespaces_loop:
 	cmp     byte [rdi], ' '
@@ -121,6 +122,9 @@ ft_atoi_base:
 
 .convert_done:
 	imul    rax, rcx                   ; nb *= sign
+
+.clean:
+	pop     rbx
 
 .done:
 	ret
