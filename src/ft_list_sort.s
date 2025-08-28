@@ -64,7 +64,10 @@ ft_list_sort:
 	jnz     .outer_loop
 
 .clean:
-	add     rsp, 32      ; clean the stack
+	pop     r14 ; end
+	pop     r13 ; ptr->next
+	pop     r12 ; ptr
+	pop     rbx ; swapped
 
 .done:
 	ret
