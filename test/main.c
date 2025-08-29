@@ -1,8 +1,10 @@
 #include "libasm.h"
+#include <unistd.h> // write(), read(), lseek()
 #include <stdio.h> // printf(), perror()
 #include <string.h> // strlen(), strcpy(), strdup(), strcmp()
-#include <stdlib.h> // malloc(), free()
+#include <stdlib.h> // malloc(), free(), rand(), srand()
 #include <fcntl.h> // open()
+#include <time.h> // time()
 
 static void test_strlen( void )
 {
@@ -168,11 +170,67 @@ static void test_read( void )
 		return ;
 	}
 
-	const char buf[2000];
+	char buf[2000];
+	ssize_t r;
+
+	// printf( "--------------------test 0--------------------\n" );
+	// printf( "test: \"%d\" and \"%d\"\n", 0, 1000 );
+	// r = read( 1, buf, 1000 );
+	// printf( "read()    = %zd\n", r );
+	// if ( r != -1 ) {
+	// 	buf[r] = '\0';
+	// 	printf( "%s\n", buf );
+	// }
+	// printf( "ft_read() = %zd\n", ft_read( 0, buf, 1000 ) );
+	// r = ft_read( 1, buf, 1000 );
+	// printf( "ft_read()    = %zd\n", r );
+	// if ( r != -1 ) {
+	// 	buf[r] = '\0';
+	// 	printf( "%s\n", buf );
+	// }
+
+	printf( "--------------------test 1--------------------\n" );
+	printf( "test: \"%d\" and \"%d\"\n", fd, 1000 );
+
+	r = read( fd, buf, 1000 );
+	if ( r != -1 ) {
+		buf[r] = '\0';
+		printf( "%s\n", buf );
+	}
+	printf( "read()    = %zd\n", r );
+
+	if ( lseek( fd, 0, SEEK_SET ) == -1 ) {
+		perror( "lseek" );
+		close( fd );
+		return ;
+	}
+
+	r = ft_read( fd, buf, 1000 );
+	if ( r != -1 ) {
+		buf[r] = '\0';
+		printf( "%s\n", buf );
+	}
+	printf( "ft_read()    = %zd\n", r );
 
 	close( fd );
-}
 
+	printf( "--------------------test 2--------------------\n" );
+	printf( "test: \"%d\" and \"%d\"\n", -1, 1000 );
+
+	r = read( -1, buf, 1000 );
+	if ( r != -1 ) {
+		buf[r] = '\0';
+		printf( "%s\n", buf );
+	}
+	printf( "read()    = %zd\n", r );
+
+	r = ft_read( -1, buf, 1000 );
+	if ( r != -1 ) {
+		buf[r] = '\0';
+		printf( "%s\n", buf );
+	}
+	printf( "ft_read()    = %zd\n", r );
+}
 
 static void test_strdup( void )
 {
@@ -352,64 +410,289 @@ static void test_atoi_base( void )
 	printf( "ft_atoi_base() = \"%d\"\n", ft_atoi_base( test_01, base_invalid_3 ) );
 }
 
-// static void print_list( t_list *list ) // works only for integers
-// {
-// 	while ( list )
-// 	{
-// 		printf( "%d -> ", *( int * )list->data );
-// 		list = list->next;
-// 	}
-// 	printf( "NULL\n" );
-// }
+// list functions
+static void print_list_int( t_list *list ) // works only for integers
+{
+	while ( list )
+	{
+		printf( "%d -> ", *( int * )list->data );
+		list = list->next;
+	}
+	printf( "NULL\n" );
+}
 
-// static int cmp( void *a, void *b )
-// {
-// 	if ( *( int * )a <= *( int * )b )
-// 		return 0;
-// 	return 1;
-// }
+static int cmp( void *a, void *b )
+{
+	if ( *( int * )a <= *( int * )b )
+		return ( 0 );
+	return ( 1 );
+}
 
-// static int is_list_sorted(t_list *list)
-// {
-//     while (list && list->next)
-//     {
-//         if (*(int *)list->next->data < *(int *)list->data)
-//             return 0;
-//         list = list->next;
-//     }
-//     return 1;
-// }
+static int is_list_sorted_int( t_list *list )
+{
+	while ( list && list->next )
+	{
+		if ( *( int * )list->next->data < *( int * )list->data ) {
+			printf( "noooooo\n" );
+			return ( 0 );
+		}
+		list = list->next;
+	}
+	printf( "yeaaaaahhhh\n" );
+	return ( 1 );
+}
 
-// static void test_list_sort( void )
-// {
-//     t_list *list = NULL;
+static void free_list( t_list **list )
+{
+	t_list  *tmp;
 
-// 	for (int i = 0; i < 100; ++i)
-// 	{
-// 		int *val = malloc(sizeof(int));
-// 		if (!val)
-// 		{
-// 			perror("malloc");
-// 			exit(1);
-// 		}
-// 		*val = rand() % 100;
-// 		ft_list_push_front(&list, val);
-// 	}
+	while ( *list )
+	{
+		tmp = *list;
+		*list = ( *list )->next;
+		free( tmp->data );
+		free( tmp );
+	}
+	*list = NULL;
+}
 
-//     printf("Avant tri : ");
-//     print_list(list);
+static void test_list_push_front( void )
+{
+	t_list  *list = NULL;
+	int     *val;
 
-//     ft_list_sort(&list, cmp);
+	srand( time ( NULL ) );
 
-//     printf("Après tri : ");
-//     print_list(list);
-// 	if (is_list_sorted( list ))
-// 		printf("yeaaaaahhhh\n");
-// 	else
-// 		printf("noooooo\n");
-// }
+	for ( int i = 0; i < 20; ++i ) {
+		val = malloc( sizeof(int) );
+		if ( !val ) {
+			perror( "malloc" );
+			return ;
+		}
+		*val = rand() % 100;
+		print_list_int( list );
+		ft_list_push_front( &list, val );
+	}
+	print_list_int( list );
+	free_list( &list );
+}
 
-int main(void)
+static void test_list_size( void )
+{
+	t_list  *list = NULL;
+	int     *val;
+
+	srand( time ( NULL ) );
+
+	for ( int i = 0; i < 20; ++i ) {
+		val = malloc( sizeof(int) );
+		if ( !val ) {
+			perror( "malloc" );
+			return ;
+		}
+		*val = rand() % 100;
+		printf( "size: %d\n", ft_list_size( list ) );
+		ft_list_push_front( &list, val );
+	}
+	printf( "size: %d\n", ft_list_size( list ) );
+	free_list( &list );
+}
+
+static void test_list_sort( void )
+{
+	t_list  *list = NULL;
+	int     *val;
+
+	srand( time ( NULL ) );
+
+	printf( "--------------------test 0--------------------\n" );
+	val = malloc( sizeof(int) );
+	if ( !val ) {
+		perror( "malloc" );
+		return ;
+	}
+	*val = rand() % 100;
+	ft_list_push_front( &list, val );
+	printf( "Before sort: " );
+	print_list_int( list );
+
+	ft_list_sort( &list, cmp );
+
+	printf( "After sort: " );
+	print_list_int( list );
+	is_list_sorted_int( list );
+
+
+	printf( "--------------------test 1--------------------\n" );
+	val = malloc( sizeof(int) );
+	if ( !val ) {
+		perror( "malloc" );
+		return ;
+	}
+	*val = rand() % 100;
+	ft_list_push_front( &list, val );
+	printf( "Before sort: " );
+	print_list_int( list );
+
+	ft_list_sort( &list, cmp );
+
+	printf( "After sort: " );
+	print_list_int( list );
+	is_list_sorted_int( list );
+
+	printf( "--------------------test 2--------------------\n" );
+	val = malloc( sizeof(int) );
+	if ( !val ) {
+		perror( "malloc" );
+		return ;
+	}
+	*val = rand() % 100;
+	ft_list_push_front( &list, val );
+	printf( "Before sort: " );
+	print_list_int( list );
+
+	ft_list_sort( &list, cmp );
+
+	printf( "After sort: " );
+	print_list_int( list );
+	is_list_sorted_int( list );
+
+	free_list( &list );
+
+	printf( "--------------------test 3--------------------\n" );
+	for ( int i = 0; i < 20; ++i )
+	{
+		val = malloc( sizeof(int) );
+		if ( !val ) {
+			perror( "malloc" );
+			return ;
+		}
+		*val = rand() % 100;
+		ft_list_push_front( &list, val );
+	}
+
+	printf( "Before sort: " );
+	print_list_int( list );
+
+	ft_list_sort( &list, cmp );
+
+	printf( "After sort: " );
+	print_list_int( list );
+	is_list_sorted_int( list );
+
+	free_list( &list );
+
+	printf( "--------------------test 4--------------------\n" );
+	printf( "Before sort: " );
+	print_list_int( list );
+
+	ft_list_sort( &list, cmp );
+
+	printf( "After sort: " );
+	print_list_int( list );
+
+	is_list_sorted_int( list );
+}
+
+static int is_equal_int( void *a, void *b )
+{
+	if ( *( int *)a == *( int *)b )
+		return ( 0 );
+	return ( 1 );
+}
+
+static void test_list_remove_if( void )
+{
+	t_list  *list = NULL;
+	int     *val;
+
+	srand( time ( NULL ) );
+
+	printf( "--------------------test 0--------------------\n" );
+	val = malloc( sizeof(int) );
+	if ( !val ) {
+		perror( "malloc" );
+		return ;
+	}
+	*val = rand() % 100;
+	ft_list_push_front( &list, val );
+	printf( "Before remove: " );
+	print_list_int( list );
+
+	ft_list_remove_if( &list, val, is_equal_int, free );
+
+	printf( "After remove: " );
+	print_list_int( list );
+
+
+	printf( "--------------------test 1--------------------\n" );
+	val = malloc( sizeof(int) );
+	if ( !val ) {
+		perror( "malloc" );
+		return ;
+	}
+	*val = rand() % 100;
+	ft_list_push_front( &list, val );
+	printf( "Before remove: " );
+	print_list_int( list );
+
+	ft_list_remove_if( &list, val, is_equal_int, free );
+
+	printf( "After remove: " );
+	print_list_int( list );
+
+	printf( "--------------------test 2--------------------\n" );
+	val = malloc( sizeof(int) );
+	if ( !val ) {
+		perror( "malloc" );
+		return ;
+	}
+	*val = rand() % 100;
+	ft_list_push_front( &list, val );
+	printf( "Before remove: " );
+	print_list_int( list );
+
+	ft_list_remove_if( &list, val, is_equal_int, free );
+
+	printf( "After remove: " );
+	print_list_int( list );
+
+	free_list( &list );
+
+	printf( "--------------------test 3--------------------\n" );
+	for ( int i = 0; i < 20; ++i )
+	{
+		val = malloc( sizeof(int) );
+		if ( !val ) {
+			perror( "malloc" );
+			return ;
+		}
+		*val = rand() % 100;
+		ft_list_push_front( &list, val );
+	}
+
+	printf( "Before remove: " );
+	print_list_int( list );
+
+	ft_list_remove_if( &list, val, is_equal_int, free );
+
+	printf( "After remove: " );
+	print_list_int( list );
+
+	free_list( &list );
+
+	printf( "--------------------test 4--------------------\n" );
+	printf( "Before remove: " );
+	print_list_int( list );
+
+	ft_list_remove_if( &list, val, is_equal_int, free );
+
+	printf( "After remove: " );
+	print_list_int( list );
+
+}
+
+int main( void )
 {
 	if ( 1 == 2 ) {
 		test_strlen();
@@ -417,77 +700,12 @@ int main(void)
 		test_atoi_base();
 		test_strdup();
 		test_strcmp();
+		test_write();
+		test_read();
+		test_list_sort();
+		test_list_push_front();
+		test_list_size();
 	}
-	test_write();
-	// test_list_sort();
-    return 0;
+	test_list_remove_if();
+	return ( 0 );
 }
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-// fonction utilitaire pour créer un node
-t_list *new_node(char *str)
-{
-    t_list *node = malloc(sizeof(t_list));
-    node->data = strdup(str); // copie la string
-    node->next = NULL;
-    return node;
-}
-
-// // print la liste
-// void print_list(t_list *list)
-// {
-//     while (list)
-//     {
-//         printf("%s -> ", (char*)list->data);
-//         list = list->next;
-//     }
-//     printf("NULL\n");
-// }
-
-// // cmp: retourne 0 si égaux
-// int cmp_str(void *a, void *b)
-// {
-//     return strcmp((char*)a, (char*)b);
-// }
-
-// // free_fct
-// void free_str(void *ptr)
-// {
-//     free(ptr);
-// }
-
-// int main(void)
-// {
-//     t_list *list = NULL;
-
-//     // liste = "c" -> "b" -> "a"
-//     list_push_front(&list, "a");
-//     list_push_front(&list, "b");
-//     list_push_front(&list, "c");
-
-//     printf("Avant suppression : ");
-//     print_list(list);
-
-//     // supprime "b"
-//     ft_list_remove_if(&list, "b", cmp_str, free_str);
-
-//     printf("Après suppression de 'b' : ");
-//     print_list(list);
-
-//     // supprime "a"
-//     ft_list_remove_if(&list, "a", cmp_str, free_str);
-
-//     printf("Après suppression de 'a' : ");
-//     print_list(list);
-
-//     // supprime "c"
-//     ft_list_remove_if(&list, "c", cmp_str, free_str);
-
-//     printf("Après suppression de 'c' : ");
-//     print_list(list);
-
-//     return 0;
-// }
