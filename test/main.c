@@ -692,20 +692,50 @@ static void test_list_remove_if( void )
 
 }
 
-int main( void )
+int main( int argc, char **argv )
 {
-	if ( 1 == 2 ) {
-		test_strlen();
-		test_strcpy();
-		test_atoi_base();
-		test_strdup();
-		test_strcmp();
-		test_write();
-		test_read();
-		test_list_sort();
-		test_list_push_front();
-		test_list_size();
+	if ( argc < 2 ) {
+		printf( "Usage: %s <test_name>\n", argv[0] );
+		return ( 1 );
 	}
-	test_list_remove_if();
+
+	if ( strcmp( argv[1], "strlen" ) == 0 )
+		test_strlen();
+
+	else if ( strcmp( argv[1], "strcpy" ) == 0 )
+		test_strcpy();
+
+	else if ( strcmp( argv[1], "strcmp" ) == 0 )
+		test_strcmp();
+
+	else if ( strcmp( argv[1], "write" ) == 0 )
+		test_write();
+
+	else if ( strcmp( argv[1], "read" ) == 0 )
+		test_read();
+
+	else if ( strcmp( argv[1], "strdup" ) == 0 )
+		test_strdup();
+
+	else if ( strcmp( argv[1], "atoi_base" ) == 0 )
+		test_atoi_base();
+
+	else if ( strcmp( argv[1], "list_push_front" ) == 0 )
+		test_list_push_front();
+
+	else if ( strcmp( argv[1], "list_size" ) == 0 )
+		test_list_size();
+
+	else if ( strcmp( argv[1], "list_sort" ) == 0 )
+		test_list_sort();
+
+	else if ( strcmp( argv[1], "list_remove_if" ) == 0 )
+		test_list_remove_if();
+
+	else {
+		printf( "%s: function does not exist\n", argv[1] );
+		return ( 1 );
+	}
+
 	return ( 0 );
 }
